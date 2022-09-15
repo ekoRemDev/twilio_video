@@ -119,6 +119,23 @@ class VideoCapturerHandler {
             return TwilioProgrammableVideoPlugin.pluginHandler.applicationContext.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         }
 
+        private fun getCameraDirection(cameraId: String): Int? {
+            if (TwilioProgrammableVideoPlugin.cameraCapturer == null) return null
+            val cameraManager: CameraManager = getCameraManager()
+            return cameraManager.getCameraCharacteristics(cameraId)[CameraCharacteristics.LENS_FACING]
+        }
+
+        private fun cameraIdCorrespondsToActiveCamera(capturer: CameraCapturer, id: String): Boolean {
+            val cameraInfo = Camera.CameraInfo()
+            Camera.getCameraInfo(id.toInt(), cameraInfo)
+
+            return when (getCameraDirection(capturer.cameraId)) {
+                CameraMetadata.LENS_FACING_FRONT -> cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT
+                CameraMetadata.LENS_FACING_BACK -> cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK
+                else -> false
+            }
+        }
+
         private fun hasTorchCameraCapturer(): Boolean {
             debug("hasTorchCameraCapturer")
             if (TwilioProgrammableVideoPlugin.cameraCapturer == null || TwilioProgrammableVideoPlugin.cameraCapturer !is CameraCapturer) return false
@@ -205,6 +222,20 @@ class VideoCapturerHandler {
                     groupValues?.getOrNull(1)
                 }
             } ?: cameraId
+        }
+
+        @JvmStatic
+        fun cameraIdToMap(cameraId: String): Map<String, Any> {
+            val cameraManager: CameraManager = getCameraManager()
+            val hasTorch = cameraManager.getCameraCharacteristics(cameraId)[CameraCharacteristics.FLASH_INFO_AVAILABLE]
+                    ?: false
+
+            return mapOf(
+                    "isFrontFacing" to TwilioProgrammableVideoPlugin.cameraEnumerator.isFrontFacing(cameraId),
+                    "isBackFacing" to TwilioProgrammableVideoPlugin.cameraEnumerator.isBackFacing(cameraId),
+                    "hasTorch" to hasTorch,
+                    "cameraId" to cameraId
+            )
         }
 
         fun videoCapturerToMap(videoCapturer: VideoCapturer, cameraId: String? = null): Map<String, Any> {

@@ -37,7 +37,7 @@ class ConferenceRoom with ChangeNotifier {
 
   late CameraCapturer _cameraCapturer;
   late Room _room;
-  late Timer _timer;
+  Timer? _timer;
 
   bool flashEnabled = false;
   bool speakerphoneEnabled = true;
@@ -289,12 +289,12 @@ class ConferenceRoom with ChangeNotifier {
 
   void _onDisconnected(RoomDisconnectedEvent event) {
     Debug.log('ConferenceRoom._onDisconnected');
-    _timer.cancel();
+    _timer?.cancel();
   }
 
   void _onReconnecting(RoomReconnectingEvent room) {
     Debug.log('ConferenceRoom._onReconnecting');
-    _timer.cancel();
+    _timer?.cancel();
   }
 
   void _onConnected(Room room) {

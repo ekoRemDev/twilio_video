@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flutter/widgets.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:twilio_programmable_video_platform_interface/src/camera_source.dart';
+import 'package:twilio_programmable_video_platform_interface/src/models/capturers/camera_event.dart';
 
 import 'method_channel_programmable_video.dart';
 import 'models/model_exports.dart';
@@ -40,6 +42,20 @@ abstract class ProgrammableVideoPlatform extends PlatformInterface {
   }
 
   //#region Functions
+  /// Calls native code to create a widget displaying the LocalVideoTrack's video.
+  Widget createLocalVideoTrackWidget({bool mirror = true, Key? key}) {
+    throw UnimplementedError('createLocalVideoTrackWidget() has not been implemented.');
+  }
+
+  /// Calls native code to create a widget displaying a RemoteVideoTrack's video.
+  Widget createRemoteVideoTrackWidget({
+    required String remoteParticipantSid,
+    required String remoteVideoTrackSid,
+    bool mirror = true,
+    Key? key,
+  }) {
+    throw UnimplementedError('createRemoteVideoTrackWidget() has not been implemented.');
+  }
 
   /// Calls native code to disconnect from a room.
   Future<void> disconnect() {
@@ -52,6 +68,8 @@ abstract class ProgrammableVideoPlatform extends PlatformInterface {
   }
 
   /// Calls native code to set the speaker mode on or off.
+  ///
+  /// Returns the new state of the speaker mode.
   @Deprecated('Use setAudioSettings for more reliable audio output management.')
   Future<bool?> setSpeakerphoneOn(bool on) {
     throw UnimplementedError('setSpeakerphoneOn() has not been implemented.');
@@ -116,7 +134,7 @@ abstract class ProgrammableVideoPlatform extends PlatformInterface {
     throw UnimplementedError('releaseVideoTrack() has not been implemented.');
   }
 
-  /// Calls native code to set the state of the local video track.
+  /// Calls native code to set the state of the LocalVideoTrack.
   ///
   /// The results of this operation are signaled to other Participants in the same Room.
   /// When a video track is disabled, blank frames are sent in place of video frames from a video capturer.

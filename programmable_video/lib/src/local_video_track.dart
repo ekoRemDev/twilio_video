@@ -2,8 +2,6 @@ part of twilio_programmable_video;
 
 /// A local video track that gets video frames from a specified [VideoCapturer].
 class LocalVideoTrack extends VideoTrack {
-  Widget? _widget;
-
   final VideoCapturer _videoCapturer;
 
   /// Check if it is enabled.
@@ -124,6 +122,13 @@ class LocalVideoTrack extends VideoTrack {
         onPlatformViewCreated: (int viewId) {
           TwilioProgrammableVideo._log('LocalVideoTrack => View created: $viewId, creationParams: $creationParams');
         },
+      );
+    }
+
+    if (kIsWeb) {
+      return ProgrammableVideoPlatform.instance.createLocalVideoTrackWidget(
+        mirror: mirror,
+        key: key,
       );
     }
 

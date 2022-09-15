@@ -325,7 +325,7 @@ class PluginHandler : MethodCallHandler, ActivityAware, BaseListener {
 
     private fun getRemoteAudioTrack(sid: String): RemoteAudioTrackPublication? {
         val remoteParticipants = TwilioProgrammableVideoPlugin.roomListener.room?.remoteParticipants
-                ?: return null
+            ?: return null
 
         var remoteAudioTrack: RemoteAudioTrackPublication?
         for (remoteParticipant in remoteParticipants) {
